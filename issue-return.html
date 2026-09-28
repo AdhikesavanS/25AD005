@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>LibroTrack - Issue and Return</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #eef5fb, #dceaf7);
+            color: #243b53;
+        }
+
+        header {
+            background: #243b53;
+            color: white;
+            padding: 25px 8%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            margin: 0;
+        }
+
+        header a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 18px;
+            border-radius: 7px;
+        }
+
+        header a:hover {
+            background: #3498db;
+        }
+
+        .container {
+            width: 92%;
+            max-width: 1150px;
+            margin: 35px auto;
+        }
+
+        .box {
+            background: white;
+            padding: 30px;
+            margin-bottom: 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+        }
+
+        .box h2 {
+            margin-top: 0;
+            color: #243b53;
+        }
+
+        .description {
+            color: #687b8c;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            max-width: 650px;
+        }
+
+        input {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #d1d9e0;
+            border-radius: 7px;
+            font-size: 15px;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52,152,219,0.12);
+        }
+
+        button {
+            padding: 12px 20px;
+            margin-top: 15px;
+            border: none;
+            border-radius: 7px;
+            background: #3498db;
+            color: white;
+            cursor: pointer;
+            font-size: 15px;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .return-btn {
+            background: #27ae60;
+        }
+
+        .return-btn:hover {
+            background: #219150;
+        }
+
+        .secondary {
+            background: #7f8c8d;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th {
+            background: #34495e;
+            color: white;
+            padding: 14px;
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 13px;
+            border-bottom: 1px solid #e1e6ea;
+            text-align: center;
+        }
+
+        tr:hover {
+            background: #f5f9fc;
+        }
+
+        .status {
+            font-weight: bold;
+        }
+
+        .empty {
+            text-align: center;
+            color: #7b8a97;
+            padding: 25px;
+        }
+
+        .info {
+            background: #edf7fd;
+            border-left: 4px solid #3498db;
+            padding: 14px;
+            border-radius: 5px;
+            color: #52616b;
+            margin-bottom: 20px;
+        }
+
+        @media(max-width: 750px) {
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            header {
+                padding: 20px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<header>
+
+    <h1>LibroTrack - Issue & Return</h1>
+
+    <a href="dashboard.html">
+        Dashboard
+    </a>
+
+</header>
+
+
+<div class="container">
+
+
+    <!-- Issue -->
+
+    <div class="box">
+
+        <h2>Issue Book</h2>
+
+        <p class="description">
+            Enter the Book ID and Student ID to issue a book.
+        </p>
+
+        <div class="info">
+            Every issued book automatically gets a 14-day due date.
+        </div>
+
+        <div class="form-grid">
+
+            <input
+                    type="number"
+                    id="bookId"
+                    placeholder="Book ID"
+                    min="1">
+
+            <input
+                    type="number"
+                    id="studentId"
+                    placeholder="Student ID"
+                    min="1">
+
+        </div>
+
+        <button onclick="issueBook()">
+            Issue Book
+        </button>
+
+    </div>
+
+
+    <!-- Return -->
+
+    <div class="box">
+
+        <h2>Return Book</h2>
+
+        <p class="description">
+            Enter the Issue Record ID to return the book.
+        </p>
+
+        <div class="form-grid">
+
+            <input
+                    type="number"
+                    id="issueRecordId"
+                    placeholder="Issue Record ID"
+                    min="1">
+
+        </div>
+
+        <button
+                class="return-btn"
+                onclick="returnBook()">
+
+            Return Book
+
+        </button>
+
+    </div>
+
+
+    <!-- Student Search -->
+
+    <div class="box">
+
+        <h2>Student Issued Books</h2>
+
+        <p class="description">
+            Search currently issued books for a student.
+        </p>
+
+        <div class="form-grid">
+
+            <input
+                    type="number"
+                    id="searchStudentId"
+                    placeholder="Student ID"
+                    min="1">
+
+        </div>
+
+        <button onclick="getStudentIssues()">
+            Search
+        </button>
+
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+
+                <tr>
+
+                    <th>Issue ID</th>
+                    <th>Book ID</th>
+                    <th>Student ID</th>
+                    <th>Issue Date</th>
+                    <th>Due Date</th>
+                    <th>Return Date</th>
+                    <th>Fine</th>
+                    <th>Status</th>
+
+                </tr>
+
+                </thead>
+
+                <tbody id="issueTableBody">
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+    <!-- All Records -->
+
+    <div class="box">
+
+        <h2>All Issue Records</h2>
+
+        <button
+                class="secondary"
+                onclick="loadIssues()">
+
+            Refresh Records
+
+        </button>
+
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+
+                <tr>
+
+                    <th>Issue ID</th>
+                    <th>Book ID</th>
+                    <th>Student ID</th>
+                    <th>Issue Date</th>
+                    <th>Due Date</th>
+                    <th>Return Date</th>
+                    <th>Fine</th>
+                    <th>Status</th>
+
+                </tr>
+
+                </thead>
+
+                <tbody id="allIssueTableBody">
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    const API_URL = "/api/issues";
+
+
+    function issueBook() {
+
+        const bookId =
+            document.getElementById("bookId").value;
+
+        const studentId =
+            document.getElementById("studentId").value;
+
+
+        if (!bookId || !studentId) {
+
+            alert("Please enter Book ID and Student ID.");
+
+            return;
+
+        }
+
+
+        fetch(
+            `${API_URL}/issue?bookId=${bookId}&studentId=${studentId}`,
+            {
+                method: "POST"
+            }
+        )
+
+            .then(response => {
+
+                if (!response.ok) {
+
+                    return response.text().then(text => {
+
+                        throw new Error(text);
+
+                    });
+
+                }
+
+                return response.json();
+
+            })
+
+            .then(data => {
+
+                alert(
+                    "Book issued successfully!\n\n" +
+                    "Issue ID: " + data.id +
+                    "\nDue Date: " + data.dueDate
+                );
+
+                document.getElementById("bookId").value = "";
+                document.getElementById("studentId").value = "";
+
+                loadIssues();
+
+            })
+
+            .catch(error => {
+
+                alert(error.message);
+
+            });
+
+    }
+
+
+    function returnBook() {
+
+        const issueId =
+            document.getElementById("issueRecordId").value;
+
+
+        if (!issueId) {
+
+            alert("Please enter Issue Record ID.");
+
+            return;
+
+        }
+
+
+        fetch(`${API_URL}/return/${issueId}`, {
+
+            method: "PUT"
+
+        })
+
+            .then(response => {
+
+                if (!response.ok) {
+
+                    return response.text().then(text => {
+
+                        throw new Error(text);
+
+                    });
+
+                }
+
+                return response.json();
+
+            })
+
+            .then(data => {
+
+                alert(
+                    "Book returned successfully!\n\n" +
+                    "Fine: Rs. " + data.fine
+                );
+
+                document.getElementById("issueRecordId").value = "";
+
+                loadIssues();
+
+            })
+
+            .catch(error => {
+
+                alert(error.message);
+
+            });
+
+    }
+
+
+    function getStudentIssues() {
+
+        const studentId =
+            document.getElementById("searchStudentId").value;
+
+
+        if (!studentId) {
+
+            alert("Please enter Student ID.");
+
+            return;
+
+        }
+
+
+        fetch(`${API_URL}/student/${studentId}`)
+
+            .then(response => {
+
+                if (!response.ok) {
+
+                    throw new Error("Unable to find student records.");
+
+                }
+
+                return response.json();
+
+            })
+
+            .then(data => {
+
+                displayIssues(
+                    data,
+                    "issueTableBody"
+                );
+
+            })
+
+            .catch(error => {
+
+                alert(error.message);
+
+            });
+
+    }
+
+
+    function loadIssues() {
+
+        fetch(API_URL)
+
+            .then(response => response.json())
+
+            .then(data => {
+
+                displayIssues(
+                    data,
+                    "allIssueTableBody"
+                );
+
+            })
+
+            .catch(error => {
+
+                alert("Unable to load issue records.");
+
+                console.error(error);
+
+            });
+
+    }
+
+
+    function displayIssues(issues, tableId) {
+
+        const tableBody =
+            document.getElementById(tableId);
+
+        tableBody.innerHTML = "";
+
+
+        if (issues.length === 0) {
+
+            tableBody.innerHTML = `
+            <tr>
+                <td colspan="8" class="empty">
+                    No issue records found
+                </td>
+            </tr>
+        `;
+
+            return;
+
+        }
+
+
+        issues.forEach(issue => {
+
+            const row =
+                document.createElement("tr");
+
+
+            row.innerHTML = `
+
+            <td>${issue.id}</td>
+
+            <td>
+                ${issue.book ? issue.book.id : "-"}
+            </td>
+
+            <td>
+                ${issue.student ? issue.student.id : "-"}
+            </td>
+
+            <td>${issue.issueDate || "-"}</td>
+
+            <td>${issue.dueDate || "-"}</td>
+
+            <td>${issue.returnDate || "-"}</td>
+
+            <td>
+                Rs. ${issue.fine || 0}
+            </td>
+
+            <td class="status">
+                ${issue.status || "-"}
+            </td>
+
+        `;
+
+
+            tableBody.appendChild(row);
+
+        });
+
+    }
+
+
+    loadIssues();
+
+</script>
+
+</body>
+</html>
